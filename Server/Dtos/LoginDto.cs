@@ -1,4 +1,6 @@
-﻿namespace Server.Dtos;
+﻿using Server.Context;
+
+namespace Server.Dtos;
 
 public sealed class LoginDto
 {
@@ -22,4 +24,10 @@ public sealed class MessageDto
     public int UserId { get; set; }
     public int ChatId { get; set; }
     public string Text { get; set; }
+}
+
+public sealed class GetChatMessagesDto
+{
+    public IEnumerable<Message> Messages { get; set; }
+    public int ChatId { get; set; }
 }

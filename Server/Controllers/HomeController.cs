@@ -82,7 +82,13 @@ public class HomeController : ControllerBase
             .OrderBy(p => p.Timestamp)
             .ToListAsync();
 
-        return Ok(messages);        
+        GetChatMessagesDto response = new()
+        {
+            Messages = messages,
+            ChatId = chatId
+        };
+
+        return Ok(response);        
     }
 
     [HttpGet("[action]/{userId}")]
