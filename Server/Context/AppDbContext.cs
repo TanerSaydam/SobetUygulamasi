@@ -22,6 +22,7 @@ public sealed class AppDbContext : IdentityDbContext<AppUser,AppRole,int>
 
     public DbSet<Chat> Chats { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<ChatParicipant> ChatParicipants { get; set; }
 }
 
 public sealed class AppUser: IdentityUser<int>{}
@@ -49,4 +50,12 @@ public sealed class Message
     public Chat Chat { get; set; }
 }
 
+public sealed class ChatParicipant
+{
+    public int UserId { get; set; }
+    public int ChatId { get; set; }
+
+    public AppUser User { get; set; }
+    public Chat Chat { get; set; }
+}
 
