@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Server.Context;
 using Server.Dtos;
+using Server.Hubs;
 
 namespace Server.Controllers;
 
@@ -12,10 +14,12 @@ public class HomeController : ControllerBase
 {
     private readonly AppDbContext _context;    
     private readonly UserManager<AppUser> _userManager;
-    public HomeController(AppDbContext context, UserManager<AppUser> userManager)
+    private readonly IHubContext<ChatHub> _hubContext;
+    public HomeController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext)
     {
         _context = context;
         _userManager = userManager;
+        _hubContext = hubContext;
     }
 
     [HttpPost("[action]")]
@@ -116,6 +120,12 @@ public class HomeController : ControllerBase
 
         await _context.Messages.AddAsync(message, cancellationToken).ConfigureAwait(false);
         await _context.SaveChangesAsync(cancellationToken);
+
+        AppUser user = await _userManager.Users.Where(p=> p.Id == message.UserId).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+
+        message.User = user;
+
+        await _hubContext.Clients.Group(message.ChatId.ToString()).SendAsync("ReceiveMessage", message);
 
         return Ok(new { Message = "Mesaj başarıyla gönderildi!" });        
     }

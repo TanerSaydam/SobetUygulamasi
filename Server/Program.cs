@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Context;
+using Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddCors(options =>
         .SetIsOriginAllowed(opt => true)));
 #endregion
 
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -90,5 +92,7 @@ app.MapControllers();
 //    }
 //    return next();
 //});
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

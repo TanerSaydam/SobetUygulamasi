@@ -6,6 +6,7 @@ import { api } from 'src/app/app.config';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageModel } from 'src/app/models/message.model';
 import { FormsModule } from '@angular/forms';
+import { SignalRService } from 'src/app/services/signal-r.service';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
   http = inject(HttpClient);
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);
+  signalR = inject(SignalRService);
 
   constructor(){
     this.activatedRoute.params.subscribe(res=> {
@@ -41,6 +43,7 @@ export class HomeComponent implements OnInit {
   }
 
   selectUser(id: number){
+    this.signalR.leaveGroup(this.chatId);
     this.router.navigateByUrl("/" + id);
   }
 
@@ -61,9 +64,14 @@ export class HomeComponent implements OnInit {
 
   getChats(){
     this.http.post<any>(api + "GetChatMessages", {userId: this.userId, toUserId: this.user.id}).subscribe(res=> {
-      console.log(res);
       this.messages = res.messages;
       this.chatId = res.chatId;
+
+      this.signalR.startConnection(this.chatId).then(()=> {        
+        this.signalR.getMessage((res)=> {
+          this.messages.push(res);
+        });
+      });     
     });
   }
 
@@ -71,7 +79,8 @@ export class HomeComponent implements OnInit {
     if(this.text.length == 0) return;
 
     this.http.post<any>(api + "PostMessage", {userId: this.userId, chatId: this.chatId, text: this.text}).subscribe(res=> {
-      this.getChats();
+      this.text = "";
+      //this.getChats();
     })
   }
 }

@@ -12,3 +12,4 @@ export const appConfig: ApplicationConfig = {
 };
 
 export const api = "https://localhost:7078/api/home/";
+export const signalRApi = "https://localhost:7078/chatHub";
