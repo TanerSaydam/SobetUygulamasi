@@ -1,0 +1,35 @@
+config:
+  target: "http://localhost:7078"
+  phases:
+    - duration: 600
+      arrivalRate: 34
+  defaults:
+    headers:
+      Content-Type: "application/json"
+    tls:
+      rejectUnauthorized: false
+scenarios:
+  - flow:
+      - post:
+          url: "/api/Values/Login"
+          json:
+            UserName: "taner"
+          capture:
+            json: "$.id" 
+            as: "userId"
+      - get:
+          url: "/api/Values/GetUsers/{{ userId }}"
+      - post:
+          url: "/api/Values/GetChatMessages"
+          json:
+            UserId: "{{ userId }}"
+            ToUserId: "2"
+      - loop:
+        - post:
+            url: "/api/Values/PostMessage"
+            json:
+              ChatId: "1"
+              UserId: "{{ userId }}"
+              Text: "Hello"
+        - think: 1 
+        count: 30 
