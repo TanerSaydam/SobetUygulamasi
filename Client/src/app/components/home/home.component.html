@@ -1,0 +1,20 @@
+<div class="container" style="margin-top: 100px;">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Kullanıcılar</h3>
+            <ul class="list-group">
+                <li (click)="selectUser(u.id)" class="list-group-item" style="cursor: pointer;" *ngFor="let u of users">{{u.userName}}</li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h3>{{userName | uppercase}} ve {{user.userName | uppercase}} Sohbet Ekranı</h3>
+            <div class="chat-box" style="height: 400px; border: 1px solid #ccc; padding: 10px; overflow-y: auto;">
+                <p><strong>Kullanıcı Adı:</strong> Mesaj - Mesaj Saati</p>
+            </div>
+            <div class="input-button-container" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <input class="form-control" placeholder="Mesajınız..."/>
+                <button class="btn btn-success mx-1">Gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
